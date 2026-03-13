@@ -9,12 +9,12 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Update ke v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Update ke v4
         with:
-          node-version: "20"
+          node-version: "24"      # Update ke versi 24 untuk menghilangkan warning
 
       - name: Install ClawHub
         run: npm install -g clawhub
@@ -24,12 +24,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd scripts
-          npm install
+          if [ -d "scripts" ]; then
+            cd scripts
+            npm install
+          else
+            echo "Folder scripts tidak ditemukan!"
+            exit 1
+          fi
 
       - name: Create Ethereum Identity
         run: node scripts/createNewEthereumIdentity.js
 
       - name: Link Human to Agent
         run: |
-          node scripts/manualLinkHumanToAgent.js --challenge '{"bangslot":"bangslot02-dot","description":"bangslot02-dot AI Agent"}'
+          node scripts/manualLinkHumanToAgent.js --challenge '{"name":"bangslot02-dot","description":"bangslot02 AI Agent"}'
